@@ -1,51 +1,81 @@
 #include "Document.hpp"
+#include <fstream>
+#include <sstream>
 
 Document::Document(std::string title, std::string contents) {
-    // TODO: implement according to the M1 specification.
-
+    title_ = title;
+    contents_ = contents;
 }
 
 bool Document::operator==(const Document& other) const {
-    // TODO
-
+    return title_ == other.title_
+        && sourcePath_ == other.sourcePath_
+        && contents_ == other.contents_;
 }
 
 bool Document::operator!=(const Document& other) const {
-    // TODO
-
+    return !(*this == other);
 }
 
 bool Document::load(const std::string& path) {
-    // TODO
+    //this is to open the file
+    std::ifstream file(path);
+
+    if (!file) {
+        return false;
+    }
+
+    //this reads the entire file into a string
+    std::ostringstream buffer;
+    buffer << file.rdbuf();
+    std::string contents = buffer.str();
+
+
+    //this finds the last slash to find the filename
+    std::size_t pos = path.find_last_of("/\\");
+
+    // if there is no slash, the path itself is the filename
+    if (pos == std::string::npos) {
+        title_ = path;
+    }
+    else {
+        title_ = path.substr(pos + 1);
+    }
+
+    //this updates the document after the file was successfully read
+    sourcePath_ = path;
+    contents_ = contents;
+
+    return true;
 
 }
 
 const std::string& Document::title() const noexcept {
-    // TODO
+    return title_;
 
 }
 
 const std::string& Document::sourcePath() const noexcept {
-    // TODO
+    return sourcePath_;
 
 }
 
 const std::string& Document::contents() const noexcept {
-    // TODO
+    return contents_;
   
 }
 
 void Document::setTitle(std::string title) {
-    // TODO
+    title_ = title;
   
 }
 
 std::size_t Document::characterCount() const noexcept {
-    // TODO
+    return contents_.size();
     
 }
 
 bool Document::empty() const noexcept {
-    // TODO
+    return contents_.empty();
    
 }
